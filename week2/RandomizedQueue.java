@@ -1,32 +1,34 @@
 /* *****************************************************************************
- *  Name:
- *  Date:
- *  Description:
+ *  Name: Anuj Upadhyay
+ *  Date: 26 January, 2022
+ *  Description: a generic data type "RandomizedQueue" where the item removed is
+ * chosen uniformly at random among items in the data structure
  **************************************************************************** */
+
+import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
-    private Node<Item> first;
-    private Node<Item> last;
+    private static final int INIT_CAPACITY = 1;
+    private int first;
+    private int last;
+    private Item[] q;
     private int n;
-
-    private static class Node<Item> {
-        private Item item;
-        private Node<Item> next;
-    }
 
     // construct an empty randomized queue
     public RandomizedQueue() {
-        first = null;
-        last = null;
+        first = 0;
+        last = 0;
+        q = (Item[]) new Object[INIT_CAPACITY];
         n = 0;
     }
 
     // is the randomized queue empty?
     public boolean isEmpty() {
-        return first == null;
+        return n == 0;
     }
 
     // return the number of items on the randomized queue
@@ -34,18 +36,33 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return n;
     }
 
+    public void resize(int capacity) {
+        assert capacity >= n;
+        Item[] copy = (Item[]) new Object[capacity];
+
+        for (int i = 0; i < n; i++) {
+            copy[i] = q[(first + i) % q.length];
+        }
+
+        q = copy;
+        first = 0;
+        last = n;
+    }
+
     // add the item
     public void enqueue(Item item) {
-        Node<Item> oldlast = last;
-        last = new Node<Item>();
-        last.item = item;
-        last.next = null;
-
-        if (isEmpty()) {
-            first = last;
+        if (item == null) {
+            throw new IllegalArgumentException();
         }
-        else {
-            oldlast.next = last;
+
+        if (n == q.length) {
+            resize(2 * q.length);
+        }
+
+        q[last++] = item;
+
+        if (last == q.length) {
+            last = 0;
         }
 
         n++;
@@ -57,13 +74,14 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new NoSuchElementException();
         }
 
-        Item item = first.item;
-        first = first.next;
+        Item item = q[first];
+        q[first] = null;
 
         n--;
+        first++;
 
-        if (isEmpty()) {
-            last = null;
+        if (first == q.length) {
+            first = 0;
         }
 
         return item;
@@ -71,15 +89,62 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // return a random item (but do not remove it)
     public Item sample() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+
+        Item item = q[StdRandom.uniform(n)];
+
+        return item;
     }
 
     // return an independent iterator over items in random order
     public Iterator<Item> iterator() {
+        return new RandomIterator();
+    }
+
+    public class RandomIterator implements Iterator<Item> {
+        private int i = 0;
+
+        public boolean hasNext() {
+            return i < n;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Item next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            Item item = q[(i + first) % q.length];
+            i++;
+
+            return item;
+        }
     }
 
     // unit testing (required)
     public static void main(String[] args) {
+        RandomizedQueue<String> queueStr = new RandomizedQueue<String>();
 
+        queueStr.enqueue("AA");
+        queueStr.enqueue("BB");
+        queueStr.enqueue("CC");
+        queueStr.enqueue("DD");
+        queueStr.enqueue("EE");
+
+        StdOut.println(queueStr.sample());
+        queueStr.enqueue("XX");
+        queueStr.enqueue("YY");
+
+        queueStr.dequeue();
+        StdOut.println(queueStr.dequeue());
+
+        for (String i : queueStr) {
+            StdOut.println(i);
+        }
     }
-
 }

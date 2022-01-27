@@ -147,6 +147,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         queueStr.dequeue();
 
         StdOut.println("Test case 6: queue size - " + queueStr.size());
+        StdOut.println("Test case 7: removed item - " + queueStr.dequeue());
 
         for (String i : queueStr) {
             StdOut.println(i);

@@ -36,7 +36,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return n;
     }
 
-    public void resize(int capacity) {
+    private void resize(int capacity) {
         assert capacity >= n;
         Item[] copy = (Item[]) new Object[capacity];
 
@@ -103,7 +103,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return new RandomIterator();
     }
 
-    public class RandomIterator implements Iterator<Item> {
+    private class RandomIterator implements Iterator<Item> {
         private int i = 0;
 
         public boolean hasNext() {

@@ -130,18 +130,23 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public static void main(String[] args) {
         RandomizedQueue<String> queueStr = new RandomizedQueue<String>();
 
-        queueStr.enqueue("AA");
-        queueStr.enqueue("BB");
-        queueStr.enqueue("CC");
-        queueStr.enqueue("DD");
-        queueStr.enqueue("EE");
+        StdOut.println("Test case 1: queue is empty - " + queueStr.isEmpty());
+        StdOut.println("Test case 2: queue size - " + queueStr.size());
 
-        StdOut.println(queueStr.sample());
-        queueStr.enqueue("XX");
-        queueStr.enqueue("YY");
+        queueStr.enqueue("Red");
+        queueStr.enqueue("Blue");
+        queueStr.enqueue("Orange");
+        queueStr.enqueue("Gray");
+        queueStr.enqueue("Gold");
+
+        StdOut.println("Test case 3: queue is not empty - " + queueStr.isEmpty());
+        StdOut.println("Test case 4: queue size - " + queueStr.size());
+
+        StdOut.println("Test case 5: saple random item from queue - " + queueStr.sample());
 
         queueStr.dequeue();
-        StdOut.println(queueStr.dequeue());
+
+        StdOut.println("Test case 6: queue size - " + queueStr.size());
 
         for (String i : queueStr) {
             StdOut.println(i);

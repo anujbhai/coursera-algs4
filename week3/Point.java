@@ -133,6 +133,28 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
-        
+
+        Point p1 = new Point(0, 0);
+        Point p2 = new Point(5, 0);
+        assert p1.slopeTo(p2) == 0.0;
+
+        Point point = new Point(-5, 0);
+        assert p1.slopeTo(point) == 0.0;
+
+        Point point1 = new Point(0, 5);
+        assert p1.slopeTo(point1) == Double.POSITIVE_INFINITY;
+
+        Point point2 = new Point(0, -5);
+        assert p1.slopeTo(point2) == Double.POSITIVE_INFINITY;
+
+        Point point3 = new Point(1, 1);
+        assert p1.slopeTo(point3) == 1.0;
+
+        Point point4 = new Point(-1, -1);
+        assert p1.slopeTo(point4) == 1.0;
+
+        Point point5 = new Point(19000, 10000);
+        Point point6 = new Point(1234, 5678);
+        System.out.println(point5.slopeTo(point6));
     }
 }

@@ -9,6 +9,7 @@
  ******************************************************************************/
 
 import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Comparator;
 
@@ -115,10 +116,9 @@ public class Point implements Comparable<Point> {
         };
     }
 
-
     /**
      * Returns a string representation of this point.
-     * This method is provide for debugging;
+     * This method is provided for debugging;
      * your program should not rely on the format of the string representation.
      *
      * @return a string representation of this point
@@ -133,6 +133,23 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
-        
+        Point points = new Point(0, 0);
+
+        StdOut.println(points.slopeTo(new Point(0, 0))); // -Infinity
+        StdOut.println(points.slopeTo(new Point(0, 1))); // Infinity
+        StdOut.println(points.slopeTo(new Point(1, 0))); // 0.0
+        StdOut.println(points.slopeTo(new Point(1, 1))); // 1.0
+        StdOut.println(points.slopeTo(new Point(-1, -1))); // 1.0
+        StdOut.println(points.slopeTo(new Point(-1, 1))); // -1.0
+        StdOut.println(points.slopeTo(new Point(10, 5))); // 0.5
+
+        StdOut.println();
+        StdOut.println(points.compareTo(new Point(0, 0))); // 0
+        StdOut.println(points.compareTo(new Point(0, 1))); // -1
+        StdOut.println(points.compareTo(new Point(1, 0))); // -1
+        StdOut.println(points.compareTo(new Point(1, 1))); // -1
+        StdOut.println(points.compareTo(new Point(-1, -1))); // 1
+        StdOut.println(points.compareTo(new Point(-1, 1))); // -1
+        StdOut.println(points.compareTo(new Point(10, 5))); // -1
     }
 }

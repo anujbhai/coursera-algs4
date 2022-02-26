@@ -1,51 +1,24 @@
-/* *****************************************************************************
- *  Name: Anuj Upadhyay
- *  Date: 25 Feb, 2022
- *  Description: A immutable data type to solve n-by-n slider puzzle.
- **************************************************************************** */
-
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Comparator;
 
-class SearchNodeComparator implements Comparator<SearchNode> {
-
-        @Override
-        public int compare(SearchNode thisObj, SearchNode thatObj) {
-            if (thisObj.sDistance == thatObj.sDistance) {
-                if ()
-            }
-        }
-}
-
-class SearchNode {
-    private Board sBoard;
-    private int sMoves;
-    private SearchNode sNode;
-    private int sDistance;
-
-    public SearchNode(Board sBoard, int sMoves, SearchNode sNode) {
-        this.sBoard = sBoard;
-        this.sMoves = sMoves;
-        this.sNode = sNode;
-        this.sDistance = sBoard.manhattan();
-    }
-}
-
-public class Solver {
-    private MinPQ<SearchNode> pq;
+public final class Solver {
     private Stack<Board> s;
     private boolean solvable;
 
     public Solver(Board initial) {
         if (initial == null) throw new IllegalArgumentException();
 
-        MinPQ<SearchNode> a = new MinPQ<>();
-        MinPQ<SearchNode> aTwin = new MinPQ<>();
-        a.insert(new SearchNode(initial, 0, null));
-        aTwin.insert(new SearchNode(initial.twin(), 0, null));
+        MinPQ<SearchNode> pq = new MinPQ<>(new SearchNodeComparator());
+        s = new Stack<>();
+
+        SearchNode a = new SearchNode(initial, 0, null);
+        SearchNode aTwin = new SearchNode(initial.twin(), 0, null);
+        pq.insert(a);
+        pq.insert(aTwin);
 
         while (!pq.isEmpty()) {
             SearchNode sn = pq.delMin();
@@ -82,38 +55,48 @@ public class Solver {
         return -1;
     }
 
+
     public Iterable<Board> solution() {
         if (!isSolvable()) return null;
 
         return s;
     }
 
-    // private static class SearchNode implements Comparable<SearchNode> {
-    //     private Board sBoard;
-    //     private int sMoves;
-    //     private SearchNode sNode;
-    //     private int sDistance;
-    //
-    //     public SearchNode(Board sBoard, int sMoves, SearchNode sNode) {
-    //         this.sBoard = sBoard;
-    //         this.sMoves = sMoves;
-    //         this.sNode = sNode;
-    //         this.sDistance = sBoard.manhattan();
-    //     }
-    //
-    //     @Override
-    //     public int compareTo(SearchNode that) {
-    //         return (this.sDistance + this.sMoves) - (that.sDistance + that.sMoves);
-    //     }
-    // }
+    private static class SearchNodeComparator implements Comparator<SearchNode> {
+        @Override
+        public int compare(SearchNode thisObj, SearchNode thatObj) {
+            if (thisObj.sDistance == thatObj.sDistance) {
+                return Integer.compare(thisObj.sBoard.hamming(), thatObj.sBoard.hamming());
+            } else if (thisObj.sDistance > thatObj.sDistance) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
+
+    private class SearchNode {
+        Board sBoard;
+        int sMoves;
+        SearchNode sNode;
+        int sDistance;
+
+        public SearchNode(Board sBoard, int sMoves, SearchNode sNode) {
+            this.sBoard = sBoard;
+            this.sMoves = sMoves;
+            this.sNode = sNode;
+            this.sDistance = sBoard.manhattan() + sMoves;
+        }
+    }
 
     public static void main(String[] args) {
         // create initial board from file
-        // int n = Integer.parseInt(args[0]);
-        int[][] tiles = {{1, 0}, {2, 3}};
-        // for (int i = 0; i < n; i++)
-        //     for (int j = 0; j < n; j++)
-        //         tiles[i][j] = n;
+        In in = new In(args[0]);
+        int n = in.readInt();
+        int[][] tiles = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                tiles[i][j] = in.readInt();
         Board initial = new Board(tiles);
 
         // solve the puzzle
@@ -124,6 +107,7 @@ public class Solver {
             StdOut.println("No solution possible");
         else {
             StdOut.println("Minimum number of moves = " + solver.moves());
+            assert solver.solution() != null;
             for (Board board : solver.solution())
                 StdOut.println(board);
         }

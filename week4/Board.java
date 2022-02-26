@@ -4,12 +4,13 @@
  *  Description: A data type that models an n-by-n board with sliding tiles.
  **************************************************************************** */
 
-import edu.princeton.cs.algs4.MinPQ;
+import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Board {
     private int[][] t;
     private int n;
+    private int manhattan;
 
     public Board(int[][] tiles) {
         n = tiles.length;
@@ -20,6 +21,8 @@ public class Board {
                 t[i][j] = tiles[i][j];
             }
         }
+
+        manhattan = findManhattan();
     }
 
     private boolean isEqual(int i, int j) {
@@ -60,7 +63,7 @@ public class Board {
         return a;
     }
 
-    public int manhattan() {
+    private int findManhattan() {
         int a = 0;
 
         for (int i = 0; i < n; i++) {
@@ -78,6 +81,10 @@ public class Board {
         }
 
         return a;
+    }
+
+    public int manhattan() {
+        return manhattan;
     }
 
     public boolean isGoal() {
@@ -111,11 +118,9 @@ public class Board {
     }
 
     public Iterable<Board> neighbors() {
-        MinPQ<Board> pq = new MinPQ<>();
-
+        Stack<Board> pq = new Stack<>();
         int tX = -1, tY = -1;
         int[] a = {1, -1};
-        Board b = new Board(t);
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -128,15 +133,14 @@ public class Board {
 
         for (int i : a) {
             if (isEqual(tY + i, tX)) {
-                // Board b = new Board(t);
-                b.exch(b.t, tY, tX, tY + 1, tX);
-                // pq.insert(b);
+                Board b = new Board(t);
+                b.exch(b.t, tY, tX, tY + i, tX);
+                pq.push(b);
             } else if (isEqual(tY, tX + i)) {
-                // Board b = new Board(t);
-                b.exch(b.t, tY, tX, tY, tX + 1);
-                // pq.insert(b);
+                Board b = new Board(t);
+                b.exch(b.t, tY, tX, tY, tX + i);
+                pq.push(b);
             }
-            pq.insert(b);
         }
 
         return pq;
@@ -170,9 +174,10 @@ public class Board {
     }
 
     private void exch(int[][] x, int i, int j, int k, int m) {
-        int swap = x[j][j];
-        x[j][i] = x[k][m];
-        x[k][m] = swap;
+        int swap = x[j][i];
+        x[j][i] = x[m][k];
+        x[m][k] = swap;
+        manhattan = findManhattan();
     }
 
     public static void main(String[] args) {
